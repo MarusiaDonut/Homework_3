@@ -7,28 +7,19 @@ namespace Homework_3
 {
     internal class Program
     {
-        class NegativeDisExceprion : Exception
-        {
-            public NegativeDisExceprion(string message)
-            {
-                Console.WriteLine(message);
-            }
-        }
-
-        enum Severity
-        {
-            Warning,
-            Error,
-            Info
-        }
-
         static void Main(string[] args)
+        {
+            getData();
+        }
+        
+        static void getData()
         {
             Console.WriteLine("Уравнение a * x^2 + b * x + c = 0");
             Dictionary<string, string> data = new();
             string message = "";
+
             string a = "";
-            string b ="";
+            string b = "";
             string c = "";
             try
             {
@@ -41,33 +32,36 @@ namespace Homework_3
                 Console.WriteLine("Введите значение c:");
                 c = Console.ReadLine();
 
-                data.Add("a", a);
-                data.Add("b", b);
-                data.Add("c", c);
-
                 int aNumber = int.Parse(a);
                 int bNumber = int.Parse(b);
                 int cNumber = int.Parse(c);
-
-                calculateData(aNumber, bNumber, cNumber);
+                if (aNumber == 0)
+                {
+                    throw new NegativeDisException("\nПараметр А не должен быть = 0\n");
+                }
+                CalculateData(aNumber, bNumber, cNumber);
             }
             catch (FormatException e)
             {
-                if (!(Int32.TryParse(a, out int numberA))) {
+                if (!(int.TryParse(a, out int numberA)))
+                {
                     message = "Неверный формат параметра A";
+                    data.Add("a", a);
                 }
-                else if (!(Int32.TryParse(b, out int numberB)))
+                else if (!(int.TryParse(b, out int numberB)))
                 {
                     message = "Неверный формат параметра B";
+                    data.Add("b", b);
                 }
-                else if (!(Int32.TryParse(c, out int numberC)))
+                else if (!(int.TryParse(c, out int numberC)))
                 {
                     message = "Неверный формат параметра C";
+                    data.Add("c", c);
                 }
-                   
+
                 FormatData(message, Severity.Error, data);
             }
-            catch (NegativeDisExceprion)
+            catch (NegativeDisException)
             {
                 message = "Дискриминант меньше 0.";
                 FormatData(message, Severity.Warning, data);
@@ -82,7 +76,7 @@ namespace Homework_3
                 Console.WriteLine("Что-то пошло не так. Введите другие данные");
             }
         }
-        
+
         static void FormatData(string message, Severity severity, Dictionary<string, string> data)
         {
             if (severity.ToString() == "Error")
@@ -111,7 +105,7 @@ namespace Homework_3
             Console.ResetColor();
         }
 
-        static void calculateData(int a, int b, int c)
+        static void CalculateData(int a, int b, int c)
         {
             double discriminant = Math.Pow(b, 2) - (4 * a * c);
             Console.WriteLine("\nДискриминант = {0}", Convert.ToString(discriminant));
@@ -128,7 +122,7 @@ namespace Homework_3
             }
             else
             {
-                throw new NegativeDisExceprion("Вещественных значений не найдено");
+                throw new NegativeDisException("Вещественных значений не найдено");
             }
         }
     }
